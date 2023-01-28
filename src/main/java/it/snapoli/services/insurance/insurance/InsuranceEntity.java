@@ -1,11 +1,13 @@
 package it.snapoli.services.insurance.insurance;
 
 import it.snapoli.services.insurance.customers.CustomerEntity;
+import it.snapoli.services.insurance.payments.InsurancePayment;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Entity
@@ -49,6 +51,10 @@ public class InsuranceEntity {
     @OneToOne
     @JoinColumn(name = "companyId", referencedColumnName = "id")
     private InsuranceCompany company;
+
+    @OneToMany
+    @JoinColumn(name = "insurancePaymentId", referencedColumnName = "id")
+    private List<InsurancePayment> payments;
 
     private BigDecimal total;
 

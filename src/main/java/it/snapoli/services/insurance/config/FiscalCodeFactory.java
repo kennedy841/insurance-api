@@ -12,21 +12,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
 import javax.enterprise.inject.Produces;
-import java.io.FileReader;
+import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class FiscalCodeFactory {
     @Produces
     public FiscalCodeConf fiscalCodeConf() throws IOException, URISyntaxException {
-        String localFile = "codice-istat-comuni.csv";
         int maxComuneNameLength = 25;
         String maleValue = "M";
         int yearStart = 8;
@@ -48,10 +45,9 @@ public class FiscalCodeFactory {
         CSVParser csvParser = new CSVParserBuilder().withSeparator('\t').build();
 
         ArrayList<Towns.Entry> values = new ArrayList<>();
+        ;
 
-
-        try(CSVReader reader = new CSVReaderBuilder(
-                new FileReader(getUrl().getFile()))
+        try(CSVReader reader = new CSVReaderBuilder(new InputStreamReader(getUrl()))
                 .withCSVParser(csvParser)   // custom CSV parser
                 .withSkipLines(1)           // skip the first line, header info
                 .build()){
@@ -82,13 +78,13 @@ public class FiscalCodeFactory {
     }
 
 
-    private static String readLocalFile() throws IOException, URISyntaxException {
-        URL resource = getUrl();
-        return new String(Files.readAllBytes(
-                Paths.get(Objects.requireNonNull(resource).getFile())));
+    private static String readLocalFile() throws IOException {
+        InputStream resource = getUrl();
+        DataInputStream dis = new DataInputStream(resource);
+        return new String(dis.readAllBytes());
     }
 
-    private static URL getUrl() {
-        return FiscalCodeFactory.class.getClassLoader().getResource("META-INF/resources/lista-comuni.csv");
+    private static InputStream getUrl() {
+        return FiscalCodeFactory.class.getClassLoader().getResourceAsStream("META-INF/resources/lista-comuni.csv");
     }
 }
