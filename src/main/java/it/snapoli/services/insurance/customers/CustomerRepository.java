@@ -17,4 +17,5 @@ public interface CustomerRepository extends JpaRepository<CustomerEntity, Intege
 
     Page<CustomerEntity> findAllByCustomerType(CustomerEntity.CustomerType customerType, Pageable pageable);
 
+
 }

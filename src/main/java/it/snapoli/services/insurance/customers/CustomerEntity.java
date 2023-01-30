@@ -17,6 +17,13 @@ public class CustomerEntity {
 
     private String cf;
 
+    public String getDisplayName(){
+        if(customerType == CustomerType.COMPANY){
+            return companyName;
+        }
+        return firstName + " "+lastName;
+    }
+
 
     @NotNull
     private String fiscalAddress;
