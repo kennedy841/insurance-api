@@ -15,11 +15,6 @@ public class InsurancePayment {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-
-    @ManyToOne
-    @JoinColumn(name = "insurancePaymentId")
-    private InsuranceEntity insurancePayment;
-
     private LocalDateTime dateTime;
 
     private int insuranceId;
