@@ -52,7 +52,7 @@ public class InsuranceEntity {
     @JoinColumn(name = "companyId", referencedColumnName = "id")
     private InsuranceCompany company;
 
-    private BigDecimal total;
+    private BigDecimal price;
 
     private BigDecimal billingAmount = BigDecimal.ZERO;
 
@@ -74,12 +74,16 @@ public class InsuranceEntity {
         return this.getToPay().compareTo(bigDecimal) >= 0;
     }
 
+    public BigDecimal getTotal(){
+        return price.add(Optional.ofNullable(billingAmount).orElse(BigDecimal.ZERO));
+    }
+
     public boolean shouldBePayed() {
-        return total.subtract(payed).compareTo(BigDecimal.ZERO) > 0;
+        return price.subtract(payed).compareTo(BigDecimal.ZERO) > 0;
     }
 
     public BigDecimal getToPay() {
-        return total.subtract(Optional.ofNullable(payed).orElse(BigDecimal.ZERO));
+        return price.subtract(Optional.ofNullable(payed).orElse(BigDecimal.ZERO));
     }
 
 

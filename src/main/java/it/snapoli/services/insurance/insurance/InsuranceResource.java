@@ -8,8 +8,6 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.util.StringUtils;
@@ -20,7 +18,6 @@ import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.function.Consumer;
 
 import static it.snapoli.services.insurance.insurance.InsuranceEntity.Status.NOT_RENEWED;
 import static java.util.Optional.ofNullable;
@@ -37,7 +34,7 @@ public class InsuranceResource {
 
     private final InsurancePaymentRepository insurancePaymentRepository;
 
-    private final InsuranceCreateRequest.Mappers insuranceMappers;
+    private final InsuranceMappers insuranceMappers;
 
 
     @GetMapping
@@ -93,11 +90,6 @@ public class InsuranceResource {
     @Setter
     public static class InsuranceCreateRequest extends InsuranceEntity {
         private InsurancePaymentDto payments;
-
-        @Mapper(componentModel = "cdi")
-        public interface Mappers {
-            InsuranceEntity from(InsuranceCreateRequest insuranceCreateRequest);
-        }
 
         @Data
         public static class InsurancePaymentDto {
