@@ -16,6 +16,8 @@ public class InsuredGood {
     @Enumerated(EnumType.STRING)
     private Type type;
 
+    private String note;
+
     private String reference;
 
     private String name;
