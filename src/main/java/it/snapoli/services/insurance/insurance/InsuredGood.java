@@ -13,8 +13,7 @@ public class InsuredGood {
     @GeneratedValue
     private int id;
 
-    @Enumerated(EnumType.STRING)
-    private Type type;
+    private String type;
 
     private String note;
 
@@ -23,7 +22,4 @@ public class InsuredGood {
     private String name;
 
 
-    enum Type{
-        car,motorcycle,truck,trailer, person, good,motorcar
-    }
 }

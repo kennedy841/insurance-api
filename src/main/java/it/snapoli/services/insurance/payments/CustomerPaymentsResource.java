@@ -6,17 +6,16 @@ import it.snapoli.services.insurance.insurance.InsuranceRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.jbosslog.JBossLog;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 
 @RestController
@@ -27,6 +26,7 @@ public class CustomerPaymentsResource {
 
     private final InsurancePaymentRepository insurancePaymentRepository;
     private final InsuranceRepository insuranceRepository;
+
 
 
     @PostMapping
@@ -56,6 +56,7 @@ public class CustomerPaymentsResource {
                 insurancePayment.setType(customerPayment.getType());
                 insurancePayment.setAmount(currentPayedAmount);
                 insurancePayment.setDateTime(customerPayment.dateTime);
+
                 insuranceRepository.save(insurance.pay(currentPayedAmount));
                 insurancePaymentRepository.save(insurancePayment);
             }

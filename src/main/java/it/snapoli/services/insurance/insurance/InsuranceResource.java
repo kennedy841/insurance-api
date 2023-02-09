@@ -1,7 +1,10 @@
 package it.snapoli.services.insurance.insurance;
 
+import it.snapoli.services.insurance.customers.CustomerEntity;
 import it.snapoli.services.insurance.customers.CustomerRepository;
 import it.snapoli.services.insurance.insurance.InsuranceEntity.Status;
+import it.snapoli.services.insurance.notes.NoteRepository;
+import it.snapoli.services.insurance.notes.NotesEntity;
 import it.snapoli.services.insurance.payments.InsurancePayment;
 import it.snapoli.services.insurance.payments.InsurancePaymentRepository;
 import lombok.Data;
@@ -36,6 +39,8 @@ public class InsuranceResource {
 
     private final InsuranceMappers insuranceMappers;
 
+    private final NoteRepository noteRepository;
+
 
     @GetMapping
     public Page<InsuranceEntity> getInsurances(@RequestParam(name = "customerId") Integer customerId,
@@ -45,10 +50,11 @@ public class InsuranceResource {
 
         PageRequest pageRequest = PageRequest.of(page - 1, size);
         if (customerId == null) {
+            Status domainStatus = Status.of(status);
             if (StringUtils.hasText(q)) {
-                return insuranceRepository.search(Status.of(status), "%" + q + "%", pageRequest);
+                return insuranceRepository.search(domainStatus, "%" + q + "%", pageRequest);
             }
-            return insuranceRepository.findAllByStatus(Status.of(status), pageRequest);
+            return insuranceRepository.findAllByStatus(domainStatus, pageRequest);
         }
 
         return insuranceRepository.findAllByCustomerIdAndStatusNotInOrderByEndTimeAsc(customerId, List.of(NOT_RENEWED), pageRequest);
@@ -66,7 +72,8 @@ public class InsuranceResource {
     public InsuranceEntity save(@RequestBody @Valid InsuranceCreateRequest req) {
         InsuredGood save = insuredGoodRepository.save(req.getInsuredGood());
         req.setInsuredGood(save);
-        req.setCustomer(customerRepository.findById(req.getCustomer().getId()).orElseThrow());
+        CustomerEntity customer = customerRepository.findById(req.getCustomer().getId()).orElseThrow();
+        req.setCustomer(customer);
         req.setEndCoverage(ofNullable(req.getEndTime()).map(v -> v.plusDays(15)).orElse(null));
 
         InsuranceEntity insuranceEntity = insuranceRepository.save(insuranceMappers.from(req));
@@ -80,6 +87,15 @@ public class InsuranceResource {
             insurancePayment.setDateTime(LocalDateTime.now());
             insurancePayment.setType(payments.getType());
             insurancePaymentRepository.save(insurancePayment);
+        }
+
+        if(req.getInsuredGood().getNote() != null){
+            noteRepository.save(NotesEntity.builder()
+                .dateTime(LocalDateTime.now())
+                .referenceEntity(String.valueOf(customer.getId()))
+                .text(req.getInsuredGood().getNote())
+                .referenceEntityType("insurance")
+                .build());
         }
 
         return insuranceEntity;

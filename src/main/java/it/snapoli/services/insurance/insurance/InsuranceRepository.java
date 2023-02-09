@@ -18,6 +18,8 @@ public interface InsuranceRepository extends JpaRepository<InsuranceEntity, Inte
 
     Page<InsuranceEntity> findAllByStatus(Status status, Pageable pageable);
 
+    List<InsuranceEntity> findAllByStatusIn(List<Status> status);
+
     @Query(value = "select customer.id as customerId, status as status, count(*) as count from InsuranceEntity group by customer.id, status")
     List<CountByStatus> countByStatus();
 
@@ -36,4 +38,5 @@ public interface InsuranceRepository extends JpaRepository<InsuranceEntity, Inte
             value = "select i from InsuranceEntity i join i.insuredGood ig join i.customer c where  i.status = :status and" +
             " (ig.reference like :search or c.cf like :search or c.firstName like :search or c.lastName like :search or c.companyName like :search or c.lastName like :search )")
     Page<InsuranceEntity> search(@Param("status") Status status,@Param("search") String q, Pageable pageable);
+
 }
