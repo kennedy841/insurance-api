@@ -56,6 +56,10 @@ public class InsuranceEntity {
 
     private BigDecimal billingAmount = BigDecimal.ZERO;
 
+    public boolean isWithBilling() {
+        return Optional.ofNullable(billingAmount).orElse(BigDecimal.ZERO).intValue() != 0;
+    }
+
     private BigDecimal payed = BigDecimal.ZERO;
 
     public InsuranceEntity pay(BigDecimal amount) {
@@ -83,7 +87,7 @@ public class InsuranceEntity {
     }
 
     public BigDecimal getToPay() {
-        return price.subtract(Optional.ofNullable(payed).orElse(BigDecimal.ZERO));
+        return getTotal().subtract(Optional.ofNullable(payed).orElse(BigDecimal.ZERO));
     }
 
 
