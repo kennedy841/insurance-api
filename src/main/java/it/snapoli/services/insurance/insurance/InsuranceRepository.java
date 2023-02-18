@@ -17,7 +17,7 @@ public interface InsuranceRepository extends JpaRepository<InsuranceEntity, Inte
 
     List<InsuranceEntity> findAllByCustomerIdAndStatusNotInOrderByStartTimeAsc(int customerId, List<Status> status);
 
-    Page<InsuranceEntity> findAllByEndCoverageGreaterThanOrderByEndCoverageDesc(LocalDate end,Pageable pageable);
+    Page<InsuranceEntity> findAllByEndCoverageBeforeOrderByEndCoverageAsc(LocalDate end,Pageable pageable);
 
     Page<InsuranceEntity> findAllByStatus(Status status, Pageable pageable);
 

@@ -61,7 +61,7 @@ public class InsuranceResource {
             }
 
             if (domainStatus == EXPIRING) {
-                return insuranceRepository.findAllByEndCoverageGreaterThanOrderByEndCoverageDesc(LocalDate.now().minusDays(7), pageRequest);
+                return insuranceRepository.findAllByEndCoverageBeforeOrderByEndCoverageAsc(LocalDate.now().plusDays(30), pageRequest);
             }
 
             if(domainStatus == TO_CASH){
