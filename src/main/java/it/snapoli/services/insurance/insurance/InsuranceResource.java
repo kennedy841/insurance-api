@@ -48,6 +48,7 @@ public class InsuranceResource {
     @GetMapping
     public Page<InsuranceEntity> getInsurances(@RequestParam(name = "customerId") Integer customerId,
                                                @RequestParam(name = "status") String status,
+                                               @RequestParam(name = "groupStatus") String groupStatus,
                                                @RequestParam(name = "toEndCoverage") LocalDate toEndCoverage,
                                                @RequestParam(name = "page", defaultValue = "1") int page,
                                                @RequestParam(name = "size", defaultValue = "10") int size, @RequestParam(name = "q") String q) {
@@ -56,11 +57,15 @@ public class InsuranceResource {
         if (customerId == null) {
             Status domainStatus = Status.of(status);
 
+            if(groupStatus != null && domainStatus == null){
+                return insuranceRepository.findAllByStatus(Status.of(groupStatus), pageRequest);
+            }
+
             if (StringUtils.hasText(q)) {
                 return insuranceRepository.search(domainStatus, "%" + q + "%", pageRequest);
             }
 
-            if (domainStatus == EXPIRING) {
+            if (domainStatus == EXPIRY) {
                 return insuranceRepository.findAllByEndCoverageBeforeOrderByEndCoverageAsc(LocalDate.now().plusDays(30), pageRequest);
             }
 

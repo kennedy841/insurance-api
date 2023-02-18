@@ -28,7 +28,7 @@ public class InsuranceEntity {
     private Status status;
 
     public enum Status {
-        ACTIVE, NOT_RENEWED, SUSPENDED, PENDING, EXPIRY, OUTOFCOVERAGE, EXPIRED, EXPIRING, TO_CASH;
+        ACTIVE, NOT_RENEWED, SUSPENDED, PENDING, EXPIRY, OUTOFCOVERAGE, EXPIRED, TO_CASH;
 
         public static Status of(String s) {
             if (s == null)
