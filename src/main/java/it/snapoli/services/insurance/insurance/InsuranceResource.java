@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +20,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static it.snapoli.services.insurance.insurance.InsuranceEntity.Status.NOT_RENEWED;
+import static it.snapoli.services.insurance.insurance.InsuranceEntity.Status.*;
 import static java.util.Optional.ofNullable;
 
 
@@ -45,16 +48,35 @@ public class InsuranceResource {
     @GetMapping
     public Page<InsuranceEntity> getInsurances(@RequestParam(name = "customerId") Integer customerId,
                                                @RequestParam(name = "status") String status,
+                                               @RequestParam(name = "toEndCoverage") LocalDate toEndCoverage,
                                                @RequestParam(name = "page", defaultValue = "1") int page,
                                                @RequestParam(name = "size", defaultValue = "10") int size, @RequestParam(name = "q") String q) {
 
         PageRequest pageRequest = PageRequest.of(page - 1, size);
         if (customerId == null) {
             Status domainStatus = Status.of(status);
+
             if (StringUtils.hasText(q)) {
                 return insuranceRepository.search(domainStatus, "%" + q + "%", pageRequest);
             }
-            return insuranceRepository.findAllByStatus(domainStatus, pageRequest);
+
+            if (domainStatus == EXPIRING) {
+                return insuranceRepository.findAllByEndCoverageGreaterThanOrderByEndCoverageDesc(LocalDate.now().minusDays(7), pageRequest);
+            }
+
+            if(domainStatus == TO_CASH){
+                return new PageImpl<>(insuranceRepository.findAll(pageRequest).stream().filter(InsuranceEntity::shouldBePayed).collect(Collectors.toList()));
+            }
+
+            if(domainStatus != null){
+                return insuranceRepository.findAllByStatus(domainStatus, pageRequest);
+            }
+            if(toEndCoverage!=null){
+                return insuranceRepository.findAllByEndCoverageIsBefore(toEndCoverage, pageRequest);
+            }
+
+            return insuranceRepository.findAll(pageRequest);
+
         }
 
         return insuranceRepository.findAllByCustomerIdAndStatusNotInOrderByEndTimeAsc(customerId, List.of(NOT_RENEWED), pageRequest);

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface InsuranceRepository extends JpaRepository<InsuranceEntity, Integer> {
@@ -16,7 +17,11 @@ public interface InsuranceRepository extends JpaRepository<InsuranceEntity, Inte
 
     List<InsuranceEntity> findAllByCustomerIdAndStatusNotInOrderByStartTimeAsc(int customerId, List<Status> status);
 
+    Page<InsuranceEntity> findAllByEndCoverageGreaterThanOrderByEndCoverageDesc(LocalDate end,Pageable pageable);
+
     Page<InsuranceEntity> findAllByStatus(Status status, Pageable pageable);
+
+    Page<InsuranceEntity> findAllByEndCoverageIsBefore(LocalDate date, Pageable pageable);
 
     List<InsuranceEntity> findAllByStatusIn(List<Status> status);
 
