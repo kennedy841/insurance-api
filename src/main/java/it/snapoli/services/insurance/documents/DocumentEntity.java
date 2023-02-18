@@ -19,6 +19,7 @@ public class DocumentEntity {
     @GeneratedValue
     private int id;
 
+    private String name;
 
     @OneToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "id")

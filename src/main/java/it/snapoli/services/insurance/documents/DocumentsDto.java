@@ -11,6 +11,7 @@ import java.time.LocalDate;
 public class DocumentsDto {
     private int id;
 
+    private String name;
 
     private CustomerEntity customer;
 
