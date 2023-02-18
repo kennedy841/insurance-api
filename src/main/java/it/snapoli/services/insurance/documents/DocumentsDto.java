@@ -15,10 +15,15 @@ public class DocumentsDto {
 
     private CustomerEntity customer;
 
-    private InsuranceEntity insurance;
+    private InsuranceDto insurance;
     private String type;
 
     private LocalDate expiry;
+
+    @Data
+    public static class InsuranceDto {
+        private int id;
+    }
 
 
     @Mapper
