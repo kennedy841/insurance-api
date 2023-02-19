@@ -1,10 +1,16 @@
 package it.snapoli.services.insurance.customers;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.smallrye.common.constraint.NotNull;
+import it.snapoli.services.insurance.documents.DocumentEntity;
+import it.snapoli.services.insurance.xceptions.ForeignKeyException;
 import lombok.Data;
+import lombok.ToString;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Entity
@@ -17,11 +23,23 @@ public class CustomerEntity {
 
     private String cf;
 
+    @OneToMany(mappedBy = "customer")
+    @JsonIgnore
+    @ToString.Exclude
+    private List<DocumentEntity> documents;
+
     public String getDisplayName(){
         if(customerType == CustomerType.COMPANY){
             return companyName;
         }
         return firstName + " "+lastName;
+    }
+
+    @DeleteMapping
+    public void onDelete(){
+        if(!documents.isEmpty()){
+            throw new ForeignKeyException("remove documents");
+        }
     }
 
 

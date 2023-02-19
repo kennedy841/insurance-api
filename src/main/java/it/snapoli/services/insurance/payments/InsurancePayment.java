@@ -2,6 +2,7 @@ package it.snapoli.services.insurance.payments;
 
 import it.snapoli.services.insurance.insurance.InsuranceEntity;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -15,9 +16,12 @@ public class InsurancePayment {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    private LocalDateTime dateTime;
+    @ManyToOne
+    @JoinColumn(name = "insuranceId",referencedColumnName = "id")
+    @ToString.Exclude
+    private InsuranceEntity insurance;
 
-    private int insuranceId;
+    private LocalDateTime dateTime;
 
     private BigDecimal amount;
 

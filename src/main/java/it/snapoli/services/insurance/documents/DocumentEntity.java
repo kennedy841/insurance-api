@@ -3,9 +3,9 @@ package it.snapoli.services.insurance.documents;
 import it.snapoli.services.insurance.customers.CustomerEntity;
 import it.snapoli.services.insurance.insurance.InsuranceEntity;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
@@ -21,12 +21,14 @@ public class DocumentEntity {
 
     private String name;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
+    @ToString.Exclude
     private CustomerEntity customer;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "insurance_id", referencedColumnName = "id")
+    @ToString.Exclude
     private InsuranceEntity insurance;
 
     @NotNull

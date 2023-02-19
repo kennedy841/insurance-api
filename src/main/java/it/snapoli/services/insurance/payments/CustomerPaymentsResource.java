@@ -52,7 +52,7 @@ public class CustomerPaymentsResource {
                 }
                 log.infof("pay insurance {} with {}",insurance, currentPayedAmount);
                 InsurancePayment insurancePayment = new InsurancePayment();
-                insurancePayment.setInsuranceId(insurance.getId());
+                insurancePayment.setInsurance(insurance);
                 insurancePayment.setType(customerPayment.getType());
                 insurancePayment.setAmount(currentPayedAmount);
                 insurancePayment.setDateTime(customerPayment.dateTime);

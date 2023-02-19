@@ -1,11 +1,17 @@
 package it.snapoli.services.insurance.insurance;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import it.snapoli.services.insurance.customers.CustomerEntity;
+import it.snapoli.services.insurance.documents.DocumentEntity;
+import it.snapoli.services.insurance.payments.InsurancePayment;
+import it.snapoli.services.insurance.xceptions.ForeignKeyException;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
@@ -21,11 +27,22 @@ public class InsuranceEntity {
 
     @OneToOne
     @JoinColumn(name = "customerId", referencedColumnName = "id")
+    @ToString.Exclude
     private CustomerEntity customer;
 
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    @OneToMany(mappedBy = "insurance")
+    @JsonIgnore
+    @ToString.Exclude
+    private List<InsurancePayment> paymentHistories;
+
+    @OneToMany(mappedBy = "insurance")
+    @JsonIgnore
+    @ToString.Exclude
+    private List<DocumentEntity> documents;
 
     public enum Status {
         ACTIVE, NOT_RENEWED, SUSPENDED, PENDING, EXPIRY, OUTOFCOVERAGE, EXPIRED, TO_CASH;
@@ -37,6 +54,16 @@ public class InsuranceEntity {
         }
     }
 
+
+    @PreRemove
+    public void preDelete(){
+        if(!paymentHistories.isEmpty()){
+            throw new ForeignKeyException("remove payments");
+        }
+        if(!documents.isEmpty()){
+            throw new ForeignKeyException("remove documents");
+        }
+    }
 
     private String productName;
 

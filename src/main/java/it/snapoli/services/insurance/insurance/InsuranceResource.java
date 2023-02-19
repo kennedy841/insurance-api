@@ -109,7 +109,7 @@ public class InsuranceResource {
             insuranceRepository.save(insuranceEntity.pay(req.payments.getAmount()));
             InsuranceCreateRequest.InsurancePaymentDto payments = req.payments;
             InsurancePayment insurancePayment = new InsurancePayment();
-            insurancePayment.setInsuranceId(insuranceEntity.getId());
+            insurancePayment.setInsurance(insuranceEntity);
             insurancePayment.setAmount(payments.getAmount());
             insurancePayment.setDateTime(LocalDateTime.now());
             insurancePayment.setType(payments.getType());
