@@ -57,6 +57,14 @@
         </dependency>
 
         <dependency>
+            <groupId>io.quarkiverse.poi</groupId>
+            <artifactId>quarkus-poi</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+
+
+
+        <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-spring-web</artifactId>
         </dependency>

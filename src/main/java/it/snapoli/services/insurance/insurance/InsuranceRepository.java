@@ -25,6 +25,8 @@ public interface InsuranceRepository extends JpaRepository<InsuranceEntity, Inte
 
     List<InsuranceEntity> findAllByStatusIn(List<Status> status);
 
+    List<InsuranceEntity> findAllByCustomerId(int customerId);
+
     @Query(value = "select customer.id as customerId, status as status, count(*) as count from InsuranceEntity group by customer.id, status")
     List<CountByStatus> countByStatus();
 
