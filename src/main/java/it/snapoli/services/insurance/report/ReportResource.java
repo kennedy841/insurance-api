@@ -25,7 +25,7 @@ public class ReportResource {
     private final InsuranceRepository insuranceRepository;
 
     @GET
-    @Path("/insurances/{customerId}/to-pay")
+    @Path("/insurances/to-pay/{customerId}")
     @Produces("application/vnd.openxmlformats-officedocument.wordprocessingml.document")
     public Response generate1(@PathParam("customerId") int customerId) {
         CustomerEntity customer = customerRepository.getOne(customerId);
