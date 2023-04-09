@@ -1,7 +1,5 @@
 package it.snapoli.services.insurance.documents;
 
-import it.snapoli.services.insurance.customers.CustomerRepository;
-import it.snapoli.services.insurance.insurance.InsuranceRepository;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
@@ -21,9 +19,6 @@ import java.util.stream.Collectors;
 public class DocumentResource {
 
     private final DocumentsRepository documentsRepository;
-    private final InsuranceRepository insuranceRepository;
-
-    private final CustomerRepository customerRepository;
 
     @GetMapping
     public Page<DocumentsDto> findAll(@RequestParam(name = "reference", defaultValue = "1") int id,
@@ -45,7 +40,7 @@ public class DocumentResource {
         return convertToDto(documentsRepository.save(documentEntity));
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     public FullDocumentsDto update(@Valid DocumentEntity documentEntity) {
         return convertToDto(documentsRepository.save(documentEntity));
     }
